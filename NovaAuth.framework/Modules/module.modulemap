@@ -1,0 +1,11 @@
+framework module NovaAuth {
+  umbrella header "NovaAuth.h"
+
+  export *
+  module * { export * }
+}
+
+module NovaAuth.Swift {
+    header "NovaAuth-Swift.h"
+    requires objc
+}
