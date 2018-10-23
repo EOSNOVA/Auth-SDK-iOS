@@ -47,8 +47,8 @@
 </array>
 ```
 
-    {scheme} must be replaced <b>eosnova.packagename</b><br/>
-    ex) when packagename is <b>com.wzdworks.Nova</b>, {scheme} will be replaced <b>eosnova.com.wzdworks.Nova</b>
+{scheme} must be replaced <b>eosnova.packagename</b><br/>
+ex) when packagename is <b>com.wzdworks.Nova</b>, {scheme} will be replaced <b>eosnova.com.wzdworks.Nova</b>
 
 
 ## In AppDelegate,
