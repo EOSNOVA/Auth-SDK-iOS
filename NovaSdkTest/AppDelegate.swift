@@ -17,6 +17,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         NovaAuth.shared.register(dappName: "EOS NOVA SDK TEST APP")
+
+// for testnet add this.
+//        NovaAuth.shared.setTestMode()
+// or
+//        NovaAuth.shared.setTestMode(address: "http://dev.cryptolions.io:38888")
+        
         return true
     }
     

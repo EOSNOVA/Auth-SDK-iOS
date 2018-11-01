@@ -86,6 +86,18 @@ NovaAuth.shared.applicationDidBecomeActive()
 }
 }
 ```
+
+## Connect to Testnet
+
+before request, add this.
+
+```swift
+NovaAuth.shared.setTestMode()   //will connect default testnet address
+NovaAuth.shared.setTestMode(address: "http://you.want.to.connect.to")
+```
+
+This will be applied globally.
+
 ## Request
 
 ### Read Account Info
