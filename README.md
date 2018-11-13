@@ -1,3 +1,4 @@
+![](images/app2app.jpg)
 
 # Requirements
 - [NOVA 1.4.0][1]
