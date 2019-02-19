@@ -54,6 +54,7 @@ ex) when packagename is <b>com.wzdworks.Nova</b>, {scheme} will be replaced <b>e
 
 ## In AppDelegate,
 
+### Swift
 ```swift
 
 import NovaAuth  //import this
@@ -88,13 +89,56 @@ NovaAuth.shared.applicationDidBecomeActive()
 }
 ```
 
+### Objective-C (AppDelegate.m)
+```objective-c
+#import "NovaAuth/NovaAuth-Swift.h" //import this
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    ....
+    [NovaAuth.shared registerWithDappName: @"YOUR APP NAME. IT WILL SHOW NOVA SDK AUTH"];
+    ....
+
+    return ......
+}
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    ....
+    [NovaAuth.shared openURLWithUrl:url];
+    ....
+
+    return ......
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    ....
+    [NovaAuth.shared applicationDidBecomeActive];
+    ....
+}
+
+@end
+
+
+```
+
+#### in Objc Project, Set YES, Build Settings -> Always Embed Swift Standard Libraries
+![](images/objc.png)
+
 ## Connect to Testnet
 
 before request, add this.
 
+### Swift
 ```swift
 NovaAuth.shared.setTestMode()   //will connect default testnet address
 NovaAuth.shared.setTestMode(address: "http://you.want.to.connect.to")
+```
+
+### Objective-C
+```Objective-c
+[NovaAuth.shared setTestModeWithAddress: @""];  //will connect default testnet address
+[NovaAuth.shared setTestModeWithAddress: @"http://you.want.to.connect.to"];
 ```
 
 This will be applied globally.
@@ -102,6 +146,7 @@ This will be applied globally.
 ## Request
 
 ### Read Account Info
+#### Swift
 ```swift
 // read account info (/v1/chain/get_account)
 // account will be choosed in nova
@@ -113,7 +158,17 @@ let raw = result.raw
 }
 ```
 
+#### Objective-C
+```Objective-c
+[NovaAuth.shared requestAccountWithCallback:^(NovaAuthResult * _Nonnull callback) {
+    long code = callback.code;
+    NSString* msg = callback.msg;
+    NSString* raw = callback.raw;
+}];
+```
+
 ### Transfer token
+#### Swift
 ```swift        
 // from : Account name format. not be empty
 // to : Account name format. not be empty
@@ -129,7 +184,17 @@ let raw = result.raw
 } 
 ```
 
+#### Objective-C
+```Objective-c
+[NovaAuth.shared requestTransferFrom:@"test2eosnova" to:@"wzdworksnova" contract:@"eosio.token" symbol:@"EOS" amount:1990.0509 precision:4 memo:@"memo here" callback:^(NovaAuthResult * _Nonnull callback) {
+    long code = callback.code;
+    NSString* msg = callback.msg;
+    NSString* raw = callback.raw;
+}];
+```
+
 ### Stake / Unstake
+#### Swift
 ```swift        
 // stake
 // account : Account name format. not be empty
@@ -155,7 +220,26 @@ let raw = result.raw
 }
 ```
 
+#### Objective-C
+```Objective-c
+//stake
+[NovaAuth.shared requestStakeWithAccount:@"test2eosnova" to:@"wzdworksnova" cpu:0.5959 net:0.5959 transfer:YES callback:^(NovaAuthResult * _Nonnull callback) {
+    long code = callback.code;
+    NSString* msg = callback.msg;
+    NSString* raw = callback.raw;
+}];
+
+//unstake
+[NovaAuth.shared requestUnstakeWithAccount:@"test2eosnova" to:@"wzdworksnova" cpu:0.5959 net:0.5959 callback:^(NovaAuthResult * _Nonnull callback) {
+    long code = callback.code;
+    NSString* msg = callback.msg;
+    NSString* raw = callback.raw;
+}];
+
+```
+
 ### Make signed string
+#### Swift
 ```swift        
 // account : Account name format. not be empty
 // message : Key-Value Dictionary. at least include 1 key.
@@ -174,7 +258,19 @@ let raw = result.raw
 }
 ```
 
+#### Objective-C
+```Objective-c
+NSDictionary *msg = [NSDictionary dictionaryWithObjectsAndKeys:@"This message", @"key1", @"will", @"key2", @"be signed", @"key3", nil];
+    
+[NovaAuth.shared requestSignatureWithAccount:@"test2eosnova" messages:msg callback:^(NovaAuthResult * _Nonnull callback) {
+    long code = callback.code;
+    NSString* msg = callback.msg;
+    NSString* raw = callback.raw;
+}];
+```
+
 ### Push a your custom action
+#### Swift
 ```swift        
 // push a your custom action.
 
@@ -194,7 +290,24 @@ let raw = result.raw
 }
 ```
 
+#### Objective-C
+```Objective-c
+NSDictionary *args = @{@"payer": @"test2eosnova",
+                        @"receiver": @"wzdworksnova",
+                        @"bytes": [NSNumber numberWithInt:4096]
+                        };
+    
+NovaAction *action = [[NovaAction alloc] initWithCode:@"eosio" action:@"buyrambytes" args:args];
+    
+[NovaAuth.shared requestCustomTransactionWithAccount:@"test2eosnova" action:action callback:^(NovaAuthResult * _Nonnull callback) {
+    long code = callback.code;
+    NSString* msg = callback.msg;
+    NSString* raw = callback.raw;
+}];
+```
+
 ### Push your custom actions
+#### Swift
 ```swift        
 // push your custom actions
 
@@ -257,6 +370,71 @@ let code = result.code
 let msg = result.msg
 let raw = result.raw
 }
+```
+
+#### Objective-C
+```Objective-c
+NSString *from = @"test2eosnova";
+NSString *to = @"actiontest11";
+int ram = 5959;
+double cpu = 0.59;
+double net = 0.59;
+NSString *ownerPublicKey = @"key";
+NSString *activePublicKey = @"key";
+
+NSDictionary *ownerKey = @{@"key": ownerPublicKey,
+                            @"weight": [NSNumber numberWithInt:1]
+                            };
+
+NSDictionary *ownerInfo = @{@"threshold": [NSNumber numberWithInt:1],
+                            @"keys": [[NSArray alloc] initWithObjects:ownerKey, nil],
+                            @"waits": [[NSMutableArray alloc] init],
+                            @"accounts": [[NSMutableArray alloc] init]
+                            };
+
+NSDictionary *activeKey = @{@"key": activePublicKey,
+                            @"weight": [NSNumber numberWithInt:1]
+                            };
+
+NSDictionary *activeInfo = @{@"threshold": [NSNumber numberWithInt:1],
+                                @"keys": [[NSArray alloc] initWithObjects:activeKey, nil],
+                                @"waits": [[NSMutableArray alloc] init],
+                                @"accounts": [[NSMutableArray alloc] init]
+                                };
+
+NSDictionary *args = @{@"creator": from,
+                        @"name": to,
+                        @"owner": ownerInfo,
+                        @"active": activeInfo
+                        };
+
+NovaAction *action1 = [[NovaAction alloc] initWithCode:@"eosio" action:@"newaccount" args:args];
+
+///////////////////////////////////////////////////////////////////////////////
+NSDictionary *args2 = @{@"payer": from,
+                        @"receiver": to,
+                        @"bytes": [NSNumber numberWithInt:ram]
+                        };
+
+NovaAction *action2 = [[NovaAction alloc] initWithCode:@"eosio" action:@"buyrambytes" args:args2];
+
+///////////////////////////////////////////////////////////////////////////////
+NSDictionary *args3 = @{@"from": from,
+                        @"receiver": to,
+                        @"stake_cpu_quantity": [NSString stringWithFormat:@"%.4f EOS", cpu],
+                        @"stake_net_quantity": [NSString stringWithFormat:@"%.4f EOS", net],
+                        @"transfer": @YES
+                        };
+
+NovaAction *action3 = [[NovaAction alloc] initWithCode:@"eosio" action:@"delegatebw" args:args3];
+
+NSArray *actions = [[NSArray alloc] initWithObjects: action1, action2, action3, nil];
+
+[NovaAuth.shared requestCustomTransactionWithAccount:from actions:actions callback:^(NovaAuthResult * _Nonnull callback) {
+    long code = callback.code;
+    NSString* msg = callback.msg;
+    NSString* raw = callback.raw;
+}];
 ```
 
 ### Result (NovaAuthResult)
