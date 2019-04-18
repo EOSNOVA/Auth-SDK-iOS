@@ -4,6 +4,8 @@
 - [NOVA 1.4.0][1]
 - iOS 10.0
 
+* SUPPORT SWIFT5
+
 #### For more information please see [the website][2].
 
 # Installation
