@@ -83,7 +83,7 @@ class MainViewController: UITableViewController {
             NovaAuth.shared.requestAccount { result in
                 if let data = result.raw.data(using: .utf8),
                     let json = try? JSONSerialization.jsonObject(with: data, options:[]) as? [String: Any],
-                    let account = json!["account_name"] {
+                    let account = json["account_name"] {
                     self.account = account as! String
                 }
                 
